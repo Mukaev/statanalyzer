@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta>
+   		<meta name ="keywords" content="test, site, website" />
+  	    <meta name="description" content="Практика 3 курс" />
+        <link href="style.css" rel="stylesheet" type ="text/css" />
+        <link href="img/finr" rel="shortcut icon" type="image/x-icon"/>
+        <title>Практика</title>
+		<!-- Подключение библиотеки JQuery. -->
+		<script type="text/javascript" src="js/lib/jquery-3.4.1.min.js"></script>
+		<!-- Подключение библиотеки Chart для построения графиков. -->
+		<script type="text/javascript" src="js/lib/Chart.bundle.min.js"></script>
+	
+		<!-- Скрипты нахождения коэффициентов корреляции. -->
+		<script type="text/javascript" src="js/correlation.js"></script>
+		<!-- Скрипт парсинга CSV-файлов. -->
+		<script type="text/javascript" src="js/CSVParse.js"></script>
+		<!-- Скрипт отрисовки графика (Chart). -->
+		<script type="text/javascript" src="js/drawDiagram.js"></script>
+		<!-- Скрипты вызовов и обработки интерфейса. -->
+		<script type="text/javascript" src="js/main.js"></script>
+		
+		<noscript>
+			<div align="center">
+				Для работы приложения необходимо включить Javascript.
+			</div>
+		</noscript>	
+	</head>
+	
+	<body onload="init()">
+		<header>
+			<a href="index.html title="На главную" id="logo"> Мехмат(АДМ) </a><span class="contact"><a href="about.html" title="Информация о нас">О нас </a></span><input type="search" class="field" placeholder="Давай помогу найти" /><span class="right"><span class="contact"><a href="reg.html" title="Зарегистрироваться"> Регистрация </a></span><span class="contact"><a href="auth.html" title="Войти"> Вход </a></span></span>
+		</header>
+		<centre>
+        <div id="menu">Разделы<hr /></div>
+        <div id="menuHrefs"> 
+            <a href="about.html">Условие задачи  </a>
+            <a href="feedback.html">  Корреляции Пирсона, Кендалла и Спирмена</a>
+		</div>
+		</centre>
+		<!-- Форма для выбора файла. -->
+		<form>
+			<div>
+				<label for="fileInput">Выберите файл с данными</label>
+				<input id="fileInput" type="file" accept=".csv">			
+			</div>			
+		</form>
+		<!-- Контейнер для диаграммы. -->
+		<div align="center">
+			<h3>Диаграмма для визуализации</h3>
+			<canvas id="myChart" width="600" height="400"></canvas>
+		</div>
+		<div class="clear"><bt /></div>    
+    	
+    
+		<!-- Контейнер для вывода результатов. -->
+
+		<pre id="content"></pre>
+		<footer>
+			<span class ="left"> Мукаев Илья 3 курс(Мехмат) 2019 </span>
+		</footer>		
+	</body>
+</html>
