@@ -51,7 +51,7 @@ function correlationSpearman(point)
         sumXY += rankX[i] * rankY[i]; 
  
         squareSumX += rankX[i] * rankX[i]; 
-        squareSumY += rankY[i] * rankY[i]; 
+		squareSumY += rankY[i] * rankY[i];
     } 
 	
    return (n * sumXY - sumX * sumY) / Math.sqrt((n * squareSumX - sumX * sumX) * (n * squareSumY - sumY * sumY)); 		
@@ -88,6 +88,31 @@ function correlationPearson(point)
 	
 	return summul / Math.sqrt(sumoffsetX * sumoffsetY);
 }
+
+function correlationFechman(point){
+	const avgX = point.x.reduce((a, b) => a + b, 0) / point.x.length;
+	const avgY = point.y.reduce((a, b) => a + b, 0) / point.y.length;
+
+	let xSign = false;
+	let ySign = false;
+
+
+	let equal = 0;
+	let notEqual = 0;
+
+	for (let i = 0; i < point.x.length; i++){
+		xSign = point.x[i] >= avgX;
+		ySign = point.y[i] >= avgY;
+
+		if (xSign === ySign){
+			equal++;
+		}else{
+			notEqual++;
+		}
+	}
+
+	return (equal - notEqual)/(equal + notEqual);
+}
 	
 	
 	
@@ -119,27 +144,44 @@ function rankify(arr)
 
 	return rank;
 }
+
+
+function kendall(point){
+
+	point = sortPoint(point);
+
+	let p = 0;
+	let q = 0;
+
+	const Y = point.y.slice().sort((a, b) => a - b);
+
+	let yindices = [];
+	/*for(let i = 0; i < point.x[i]; i++){
+		yindices.push(Y.indexOf(point.y[i]));
+	}*/
+	point.x.map( (el, i) => {
+		yindices.push(Y.indexOf(point.y[i]));
+		Y[Y.indexOf(point.y[i])] = Infinity;
+	 });
+	
+	yindices.map( (el, index) => {
+		let temp = yindices.slice(index+1);
+		temp.map( i => {if (el < i) p++; else q++;});
+	} );
+
+	return (1 - 4*q/point.x.length/(point.x.length - 1));
+
+}
 	
 	
 	
 // Функция сортировки методом Пузырька массивов X, Y.
 function sortPoint(point)
 {
-	for (var i = 0, endI = point.x.length - 1; i < endI; i++) 
-	{
-        for (var j = 0, endJ = endI - i; j < endJ; j++) 
-		{
-            if (point.x[j] > point.x[j + 1]) 
-			{
-                var swap = point.x[j];
-                point.x[j] = point.x[j + 1];
-                point.x[j + 1] = swap;
-				
-				swap = point.y[j];
-                point.y[j] = point.y[j + 1];
-                point.y[j + 1] = swap;
-            }
-        }
-    }
+	let temp = {x: [], y: []};
+	point.x.map( (el, i) => { return {x: el, y: point.y[i]}; } )
+	.sort( (a,b) => a.x - b.x)
+	.map(obj => {temp.x.push(obj.x); temp.y.push(obj.y)});
+	return temp;
 }
 	
