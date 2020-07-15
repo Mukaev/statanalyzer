@@ -156,9 +156,7 @@ function kendall(point){
 	const Y = point.y.slice().sort((a, b) => a - b);
 
 	let yindices = [];
-	/*for(let i = 0; i < point.x[i]; i++){
-		yindices.push(Y.indexOf(point.y[i]));
-	}*/
+	
 	point.x.map( (el, i) => {
 		yindices.push(Y.indexOf(point.y[i]));
 		Y[Y.indexOf(point.y[i])] = Infinity;

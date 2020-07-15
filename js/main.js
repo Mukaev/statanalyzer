@@ -61,8 +61,6 @@ function handleFileLoad(event)
 
 function drawTable(papa){
 	const tabledata = papa.data;
-
-	console.log("data that goes into table", tabledata);
 	
 	const table = new Tabulator("#content", {
 			data: tabledata,
@@ -182,7 +180,7 @@ function processSelectAxes(e){
 	}
 
 	if (axisX !== undefined && axisY !== undefined){
-		document.getElementById('canvas_container').innerHTML += "<canvas id = 'myChart' width ='600' height = '500'></canvas>";
+		document.getElementById('canvas_container').innerHTML = "<canvas id = 'myChart' width ='600' height = '500'></canvas>";
 		drawDiagram({x: data[axisX], y: data[axisY]});
 	}
 
@@ -200,7 +198,6 @@ function processSelectCoef(e){
 
 	let coef = {title: "Коэффициенты корреляции между "+e.value+" и другими столбцами", pearson: [], spearman: [], kendall: [],  fechman: []};
 
-	console.warn("BEFORE COMPUTIGN COEFS");
 
 	for (const [key, value] of Object.entries(data)) {
 		//if (key === e.value) continue;
@@ -216,8 +213,6 @@ function processSelectCoef(e){
 			console.warn("Fechman READY");
 		}
 	}
-
-	console.warn("AFTER COMPUTIGN COEFS");
 
 	console.log("COEFS", coef);
 
