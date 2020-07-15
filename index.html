@@ -4,9 +4,12 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta>
    		<meta name ="keywords" content="test, site, website" />
   	    <meta name="description" content="Практика 3 курс" />
-        <link href="style.css" rel="stylesheet" type ="text/css" />
-        <link href="img/finr" rel="shortcut icon" type="image/x-icon"/>
-        <title>Практика</title>
+        <!--<link href="style.css" rel="stylesheet" type ="text/css" />-->
+		<link href="img/finr" rel="shortcut icon" type="image/x-icon"/>
+		<link href="bootstrap.css" type="text/css" rel="stylesheet" />
+		<link href="style.css" type="text/css" rel="stylesheet" />
+
+        <title>Интеллектуальный анализатор статистических данных</title>
 		<!-- Подключение библиотеки JQuery. -->
 		<script type="text/javascript" src="js/lib/jquery-3.4.1.min.js"></script>
 		<!-- Подключение библиотеки Chart для построения графиков. -->
@@ -14,51 +17,136 @@
 	
 		<!-- Скрипты нахождения коэффициентов корреляции. -->
 		<script type="text/javascript" src="js/correlation.js"></script>
-		<!-- Скрипт парсинга CSV-файлов. -->
-		<script type="text/javascript" src="js/CSVParse.js"></script>
 		<!-- Скрипт отрисовки графика (Chart). -->
 		<script type="text/javascript" src="js/drawDiagram.js"></script>
 		<!-- Скрипты вызовов и обработки интерфейса. -->
 		<script type="text/javascript" src="js/main.js"></script>
+		<!-- Bootstrap для красоты-->
+		<script type="text/javascript" src="js/lib/bootstrap-4.5.0-dist/js/bootstrap.bundle.js"></script>
+		<!-- Фреймворк для красивых таблиц-->
+		<link href="dist/css/tabulator.min.css" rel="stylesheet">
+		<script type="text/javascript" src="dist/js/tabulator.min.js"></script>
+		<!-- Фреймворк для парсинга -->
+		<script type = "text/javascript" src = "js/papaparse.min.js"></script>
+
 		
 		<noscript>
 			<div align="center">
 				Для работы приложения необходимо включить Javascript.
 			</div>
 		</noscript>	
+		
 	</head>
+
+	
 	
 	<body onload="init()">
+
+		<div style="display: flex; flex-direction: column; min-height: 100%; position: absolute; width: 100%;">
+
+
+			<div style="flex: 1 0 auto;">
+		
+				<nav class="navbar navbar-expand-lg navbar-light bg-light" style="width: 100%">
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+					  <span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+					  <a class="navbar-brand" href="index.html" title = "На главную">Мехмат (АДМ)</a>
+					  <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+						<li class="nav-item">
+						  <a class="nav-link" href="about.html">О нас</a>
+						</li>
+						<li class="nav-item">
+						<form class="form-inline mx-3" onsubmit="(function(){
+		
+						})()">
+								<input class="form-control mr-sm-2" type="search" placeholder="Давай помогу найти" aria-label="Search">
+								<button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+									<img src="search.svg" style="width: 1rem; height: 1rem;">
+								</button>
+							  </form>
+						</li>
+					</ul>
+					<ul class = "navbar-nav">
+						<li class="nav-item">
+						  <a class="nav-link" href="#">Зарегистрироваться</a>
+						</li>
+						<li class="nav-item">
+						  <a class="nav-link" href="#">Вход</a>
+						</li>
+					  </ul>  
+					</div>
+				  </nav>
+			
+
+				
+				  
+				
+					<!-- Форма для выбора файла. -->
+					<div class="container mt-2" style="align-self:flex-start;">
+						<div align="center">
+						<h3>Диаграмма для визуализации</h3>
+					    </div>
+					<form>
+						<div class="form-group">
+							<label for="fileInput">Выберите файл с данными</label>
+							<br>
+							<input id="fileInput" type="file" accept=".csv" value="Выберите файл .csv">			
+						</div>			
+					</form>
+
+					<!-- Контейнер для диаграммы. -->
+					<div id="canvas_container" align="center"></div>
+					<div id="canvas_container2" align="center"></div>
+
+				 	<div class="clear"><bt /></div></div>
+				
+					<!-- Контейнер для вывода результатов. -->			
+					<div class="container">
+						<div id ="checkboxes"></div>
+						<div id ="error_content" class="alert alert-danger" role="alert" style="display: none"></div>
+						
+						<pre id="content"></pre>
+				    </div>
+					
+			
+				   <div class="container" >
+					<h2>Корреляция</h2>
+					<p>Корреля́ция (от лат. correlatio «соотношение, взаимосвязь»), или корреляционная зависимость, — статистическая взаимосвязь двух или более случайных величин (либо величин, которые можно с некоторой допустимой степенью точности считать таковыми). При этом изменения значений одной или нескольких из этих величин сопутствуют систематическому изменению значений другой или других величин.
+
+						Математической мерой корреляции двух случайных величин служит корреляционное отношение  либо коэффициент корреляции. В случае если изменение одной случайной величины не ведёт к закономерному изменению другой случайной величины, но приводит к изменению другой статистической характеристики данной случайной величины, то подобная связь не считается корреляционной, хотя и является статистической.
+						
+						Впервые в научный оборот термин корреляция ввёл французский палеонтолог Жорж Кювье в XVIII веке. Он разработал «закон корреляции» частей и органов живых существ, с помощью которого можно восстановить облик ископаемого животного, имея в распоряжении лишь часть его останков. В статистике слово «корреляция» первым стал использовать английский биолог и статистик Фрэнсис Гальтон в конце XIX века.</p>
+				<hr>
+				<h2>Взаимосвязь величин</h2>
+            <p>Значительная корреляция между двумя случайными величинами всегда является свидетельством существования некоторой статистической связи в данной выборке, но эта связь не обязательно должна наблюдаться для другой выборки и иметь причинно-следственный характер. Часто заманчивая простота корреляционного исследования подталкивает исследователя делать ложные интуитивные выводы о наличии причинно-следственной связи между парами признаков, в то время как коэффициенты корреляции устанавливают лишь статистические взаимосвязи. Например, рассматривая пожары в конкретном городе, можно выявить весьма высокую корреляцию между ущербом, который нанёс пожар, и количеством пожарных, участвовавших в ликвидации пожара, причём эта корреляция будет положительной. Из этого, однако, не следует вывод «увеличение количества пожарных приводит к увеличению причинённого ущерба», и тем более не будет успешной попытка минимизировать ущерб от пожаров путём ликвидации пожарных бригад[5]. Корреляция двух величин может свидетельствовать о существовании общей причины, хотя сами явления напрямую не взаимодействуют. Например, обледенение становится причиной как роста травматизма из-за падений, так и увеличения аварийности среди автотранспорта. В этом случае две величины (травматизм из-за падений пешеходов и аварийность автотранспорта) будут коррелировать, хотя они не связаны причинно-следственно друг с другом, а лишь имеют стороннюю общую причину — гололедицу.
+
+                    В то же время, отсутствие корреляции между двумя величинами ещё не значит, что между ними нет никакой связи. Например, зависимость может иметь сложный нелинейный характер, который корреляция не выявляет.
+                    
+                    Некоторые виды коэффициентов корреляции могут быть положительными или отрицательными. В первом случае предполагается, что мы можем определить только наличие или отсутствие связи, а во втором — также и её направление. Если предполагается, что на значениях переменных задано отношение строгого порядка, то отрицательная корреляция — корреляция, при которой увеличение одной переменной связано с уменьшением другой. При этом коэффициент корреляции будет отрицательным. Положительная корреляция в таких условиях — это такая связь, при которой увеличение одной переменной связано с увеличением другой переменной. Возможна также ситуация отсутствия статистической взаимосвязи — например, для независимых случайных величин.</p>        
+        
+					</div>  
+					
+			</div>
+					
+		  <div class="p-3 bg-secondary"  style="flex-shrink: 0;">
+			Мукаев Илья 3 курс(Мехмат) 2019 & Кечахмадзе Андрей 2 курс (Мехмат) 2020
+		  </div>
+
+	</div>
+	
+
+		  <!-- OLD HEADER
 		<header>
 			<a href="index.html title="На главную" id="logo"> Мехмат(АДМ) </a><span class="contact"><a href="about.html" title="Информация о нас">О нас </a></span><input type="search" class="field" placeholder="Давай помогу найти" /><span class="right"><span class="contact"><a href="reg.html" title="Зарегистрироваться"> Регистрация </a></span><span class="contact"><a href="auth.html" title="Войти"> Вход </a></span></span>
-		</header>
-		<centre>
-        <div id="menu">Разделы<hr /></div>
-        <div id="menuHrefs"> 
-            <a href="about.html">Условие задачи  </a>
-            <a href="feedback.html">  Корреляции Пирсона, Кендалла и Спирмена</a>
-		</div>
-		</centre>
-		<!-- Форма для выбора файла. -->
-		<form>
-			<div>
-				<label for="fileInput">Выберите файл с данными</label>
-				<input id="fileInput" type="file" accept=".csv">			
-			</div>			
-		</form>
-		<!-- Контейнер для диаграммы. -->
-		<div align="center">
-			<h3>Диаграмма для визуализации</h3>
-			<canvas id="myChart" width="600" height="400"></canvas>
-		</div>
-		<div class="clear"><bt /></div>    
-    	
-    
-		<!-- Контейнер для вывода результатов. -->
+		</header> -->
 
-		<pre id="content"></pre>
-		<footer>
-			<span class ="left"> Мукаев Илья 3 курс(Мехмат) 2019 </span>
-		</footer>		
+		<!--<iframe id="iframe" src="main.html" height="100%" width="100%"></iframe>-->
+		
+		
+
+	
 	</body>
+	
 </html>

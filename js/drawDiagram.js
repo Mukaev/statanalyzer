@@ -1,60 +1,86 @@
 // Отрисовка диаграммы.
-function drawDiagram(point) 
+function drawDiagram(dataset) 
 {
 	var ctx = document.getElementById("myChart");
+	let points = [];
+	for (let i = 0; i < dataset.x.length; i++){
+		points.push({
+			x: dataset.x[i],
+			y: dataset.y[i],
+		});
+	}
 	var myChart = new Chart 
-	(ctx, 
-	{
-		type: 'line',
-		data: 
-		{
-			// Подписи оси OX.
-			labels: [], 
-			datasets: 
-			[
-				{
-					// Метка.
-					label: 'f(x)', 
-					// Данные.
-					data: [],
-					// Цвет.
-					borderColor: 'green',
-					// Толщина линии.
-					borderWidth: 2,
-					fill: false 
-				}
-			]
+	(ctx, {
+		type: 'scatter',
+		data: {
+			datasets:[{
+				label: "Зависимость " +axisY+" от "+axisX,
+				data: points,
+				showLine: true,
+			}],
 		},
-		
-		options: 
-		{
-			responsive: false, 
-			scales: 
+		options: {
+			responsive: false,
+		}
+	});
+	console.log(points);
+}
+
+function drawCoef(coef){
+	let ctx = document.getElementById("myChart2");
+	let myChart = new Chart 
+	(ctx, {
+		type: 'bar',
+		data: {
+			labels: coef.pearson.map(object => object.title),
+			datasets: [{
+				label: "Коэффициент Пирсона",
+				barPercentage: 0.5,
+				barThickness: 6,
+				maxBarThickness: 8,
+				minBarLength: 2,
+				data: coef.pearson,
+				backgroundColor: "#800000",
+			},{
+				label: "Коэффициент Спирмена",
+				barPercentage: 0.5,
+				barThickness: 6,
+				maxBarThickness: 8,
+				minBarLength: 2,
+				data: coef.spearman,
+				backgroundColor: "#000075",
+			},{
+				label: "Коэффициент Кендалла",
+				barPercentage: 0.5,
+				barThickness: 6,
+				maxBarThickness: 8,
+				minBarLength: 2,
+				data: coef.kendall,
+				backgroundColor: "#ffe119",
+			},
 			{
-				xAxes: 
-				[
-				{
-					display: true
-				}
-				],
-				yAxes:
-				[
-				{
-					display: true
-				}
-				]
+				label: "Коэффициент Фехнера",
+				barPercentage: 0.5,
+				barThickness: 6,
+				maxBarThickness: 8,
+				minBarLength: 2,
+				data: coef.fechman,
+				backgroundColor: "#3cb44b",
+			}],
+		},
+		options: {
+			scales: {
+				yAxes: [{
+					ticks: {
+						beginAtZero: true
+					}
+				}]
+			},
+			responsive: true,
+			title: {
+				display: true,
+				text: coef.title,
 			}
 		}
-	}
-	);
-	
-	// Заполнение данными.
-	for (var i = 0; i < point.x.length; i++) 
-	{
-		myChart.data.labels.push('' + point.x[i]);
-		myChart.data.datasets[0].data.push(point.y[i]);
-	}
-	
-  // Обновление.
-  myChart.update();
+	});
 }
